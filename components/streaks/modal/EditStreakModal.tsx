@@ -82,7 +82,6 @@ export default function EditStreakModal({
   });
 
   const onSubmit = (values: FormSchema) => {
-    console.log("Submitted:", values);
     updateStreakM({
       id,
       title: values.title ?? "",

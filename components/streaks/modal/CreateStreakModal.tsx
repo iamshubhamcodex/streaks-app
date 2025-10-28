@@ -74,7 +74,6 @@ export default function CreateStreakModalHandler() {
   });
 
   const onSubmit = (values: FormSchema) => {
-    console.log("Submitted:", values);
     createStreakM({
       title: values.title ?? "",
       description: values.description ?? "",

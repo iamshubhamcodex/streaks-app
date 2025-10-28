@@ -17,7 +17,6 @@ export default function StreakList({ streaks }: { streaks: StreakDataType[] }) {
   const { mutate: increaseCountM, isPending: loadingIncrease } = useMutation({
     mutationFn: increaseCount,
     onSuccess: (data) => {
-      console.log(data);
       if (data.status === "success") {
         queryClient.invalidateQueries({ queryKey: ["streaks"] });
         alert("Increased count for " + data.data.title);
