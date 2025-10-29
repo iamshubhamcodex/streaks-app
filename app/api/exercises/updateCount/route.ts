@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     });
 
   exercise.count = exercise.count + 1;
-  if (data.repsDidToday === exercise.reps)
+  if (data.repsDidToday >= exercise.reps)
     exercise.continuousDays = exercise.continuousDays + 1;
 
   if (exercise.continuousDays > 3 && exercise.reps <= 100) {

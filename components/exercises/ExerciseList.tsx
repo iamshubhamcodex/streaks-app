@@ -39,6 +39,21 @@ export default function ExerciseList({
     deleteExerciseM(id);
   };
 
+  const sortedExercises: ExerciseDataType[] = useMemo(() => {
+    return exercises
+      .reduce(
+        (acc, it) => {
+          if (!isSameDate(new Date(it.updatedAt), new Date()) || it.count === 0)
+            acc[0].push(it);
+          else acc[1].push(it);
+
+          return acc;
+        },
+        [[], []] as ExerciseDataType[][]
+      )
+      .reduce((acc, it) => [...acc, ...it], []);
+  }, [exercises]);
+
   return (
     <Card variant={"md"} className="rounded-[12px]">
       <CardTitle>
@@ -48,7 +63,7 @@ export default function ExerciseList({
       {Array.isArray(exercises) && exercises.length !== 0 && (
         <CardContent className="flex flex-col gap-3">
           {Array.isArray(exercises) &&
-            exercises.map((exercise) => (
+            sortedExercises.map((exercise) => (
               <ExerciseCard
                 key={exercise._id}
                 exercise={exercise}

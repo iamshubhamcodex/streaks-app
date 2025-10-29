@@ -53,29 +53,44 @@ export default function StreakList({ streaks }: { streaks: StreakDataType[] }) {
     deleteStreakM(id);
   };
 
-  return (
-    <Card variant={"md"} className="rounded-[12px]">
-      <CardTitle>
-        You have {remainingStreaks} remaining Streak
-        {remainingStreaks > 1 ? "s" : ""}
-      </CardTitle>
-      {Array.isArray(streaks) && streaks.length !== 0 && (
-        <CardContent className="flex flex-col gap-3">
-          {Array.isArray(streaks) &&
-            streaks.map((streak) => (
-              <StreakCard
-                key={streak._id}
-                streak={streak}
-                loading={loadingIncrease && incrementingId.includes(streak._id)}
-                loadingDelete={
-                  loadingDelete && incrementingId.includes(streak._id)
-                }
-                handleIncrementClick={handleIncrementClick}
-                handleDeleteClick={handleDeleteClick}
-              />
-            ))}
-        </CardContent>
-      )}
-    </Card>
-  );
+const sortedStreaks: StreakDataType[] = useMemo(() => {
+  return streaks
+    .reduce(
+      (acc, it) => {
+        if (!isSameDate(new Date(it.updatedAt), new Date()) || it.count === 0)
+          acc[0].push(it);
+        else acc[1].push(it);
+
+        return acc;
+      },
+      [[], []] as StreakDataType[][]
+    )
+    .reduce((acc, it) => [...acc, ...it], []);
+}, [streaks]);
+
+return (
+  <Card variant={"md"} className="rounded-[12px]">
+    <CardTitle>
+      You have {remainingStreaks} remaining Streak
+      {remainingStreaks > 1 ? "s" : ""}
+    </CardTitle>
+    {Array.isArray(streaks) && streaks.length !== 0 && (
+      <CardContent className="flex flex-col gap-3">
+        {Array.isArray(streaks) &&
+          sortedStreaks.map((streak) => (
+            <StreakCard
+              key={streak._id}
+              streak={streak}
+              loading={loadingIncrease && incrementingId.includes(streak._id)}
+              loadingDelete={
+                loadingDelete && incrementingId.includes(streak._id)
+              }
+              handleIncrementClick={handleIncrementClick}
+              handleDeleteClick={handleDeleteClick}
+            />
+          ))}
+      </CardContent>
+    )}
+  </Card>
+);
 }

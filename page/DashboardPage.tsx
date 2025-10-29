@@ -2,7 +2,9 @@
 
 import { getDashboard } from "@/apiService/dashboard";
 import ExerciseSummary from "@/components/dashboard/ExerciseSummary";
+import ImprovementsSummary from "@/components/dashboard/ImprovementsSummary";
 import StreaksSummary from "@/components/dashboard/StreaksSummary";
+import { Accordion } from "@/components/ui/accordion";
 import Container from "@/components/ui/container";
 import Section from "@/components/ui/section";
 import { Spinner } from "@/components/ui/spinner";
@@ -23,10 +25,11 @@ export default function DashboardPage() {
           {loading ? (
             <Spinner />
           ) : data?.status === "success" ? (
-            <>
+            <Accordion type="single" collapsible className="w-full">
               <StreaksSummary streaks={data?.data.streaks} />
               <ExerciseSummary exercises={data?.data.exercises} />
-            </>
+              <ImprovementsSummary improvements={data?.data.improvements} />
+            </Accordion>
           ) : (
             <Paragraph>{data?.message}</Paragraph>
           )}
