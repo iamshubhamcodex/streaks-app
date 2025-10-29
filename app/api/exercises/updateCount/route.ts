@@ -21,8 +21,8 @@ export async function POST(req: Request) {
   if (data.repsDidToday === exercise.reps)
     exercise.continuousDays = exercise.continuousDays + 1;
 
-  if (exercise.continuousDays > 3) {
-    exercise.reps = exercise.reps + exercise.autoIncrease;
+  if (exercise.continuousDays > 3 && exercise.reps <= 100) {
+    exercise.reps = Math.min(100, exercise.reps + exercise.autoIncrease);
     exercise.continuousDays = 0;
   }
   await exercise.save();

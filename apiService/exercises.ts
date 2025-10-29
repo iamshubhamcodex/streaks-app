@@ -5,6 +5,7 @@ export type ExerciseDataType = {
   _id: string;
   title: string;
   description: string;
+  continuousDays: number;
   count: number;
   reps: number;
   autoIncrease: number;

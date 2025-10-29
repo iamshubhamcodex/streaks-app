@@ -51,7 +51,7 @@ function ExerciseCard({
           </div>
           <div className="w-max flex flex-col items-end">
             <Paragraph size={18} weight={"bold"}>
-              {exercise.count} / {exercise.reps}
+              {exercise.continuousDays} / {exercise.reps}
             </Paragraph>
             <Span size={12} className="opacity-80 min-w-max">
               {formatDate(exercise.updatedAt)}
