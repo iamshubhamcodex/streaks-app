@@ -18,14 +18,20 @@ export const getAllExercises = async () => {
   );
 };
 export const createExercise = async (
-  body: Omit<ExerciseDataType, "_id" | "count" | "updatedAt" | "createdAt">
+  body: Omit<
+    ExerciseDataType,
+    "_id" | "count" | "continuousDays" | "updatedAt" | "createdAt"
+  >
 ) => {
   return handleTryCatch<ExerciseDataType>(
     axiosInstance.post("/api/exercises", body)
   );
 };
 export const updateExercise = async (
-  body: Omit<ExerciseDataType, "_id" | "count" | "updatedAt" | "createdAt"> & {
+  body: Omit<
+    ExerciseDataType,
+    "_id" | "count" | "continuousDays" | "updatedAt" | "createdAt"
+  > & {
     id: string;
   }
 ) => {
