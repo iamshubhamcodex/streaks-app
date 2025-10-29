@@ -106,8 +106,8 @@ export default function EditExerciseModal({
       id,
       title: values.title ?? "",
       description: values.description ?? "",
-      reps: +values.reps ?? 10,
-      autoIncrease: +values.autoIncrease ?? 5,
+      reps: +(values.reps ?? "10"),
+      autoIncrease: +(values.autoIncrease ?? "5"),
     });
   };
 

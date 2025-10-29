@@ -93,8 +93,8 @@ export default function CreateExerciseModalHandler() {
     createExerciseM({
       title: values.title ?? "",
       description: values.description ?? "",
-      reps: +values.reps ?? 10,
-      autoIncrease: +values.autoIncrease ?? 3,
+      reps: +(values.reps ?? "10"),
+      autoIncrease: +(values.autoIncrease ?? "3"),
     });
   };
 
