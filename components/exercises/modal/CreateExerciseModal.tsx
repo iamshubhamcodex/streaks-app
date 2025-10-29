@@ -26,8 +26,8 @@ import * as z from "zod";
 const formSchema = z.object({
   title: z.string().min(2, "Should be greater than 2 characters"),
   description: z.string().optional(),
-  reps: z.number().min(10),
-  autoIncrease: z.number().min(3),
+  reps: z.string(),
+  autoIncrease: z.string(),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -71,8 +71,8 @@ export default function CreateExerciseModalHandler() {
     defaultValues: {
       title: "",
       description: "",
-      reps: 10,
-      autoIncrease: 3,
+      reps: "10",
+      autoIncrease: "3",
     },
   });
   const { mutate: createExerciseM, isPending: loading } = useMutation({
@@ -93,8 +93,8 @@ export default function CreateExerciseModalHandler() {
     createExerciseM({
       title: values.title ?? "",
       description: values.description ?? "",
-      reps: values.reps ?? 10,
-      autoIncrease: values.autoIncrease ?? 3,
+      reps: +values.reps ?? 10,
+      autoIncrease: +values.autoIncrease ?? 3,
     });
   };
 
