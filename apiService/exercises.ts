@@ -7,7 +7,7 @@ export type ExerciseDataType = {
   description: string;
   count: number;
   reps: number;
-  increaseCount: number;
+  autoIncrease: number;
   updatedAt: Date;
   createdAt: Date;
 };
@@ -17,14 +17,14 @@ export const getAllExercises = async () => {
   );
 };
 export const createExercise = async (
-  body: Omit<ExerciseDataType, "_id" | "updatedAt" | "createdAt">
+  body: Omit<ExerciseDataType, "_id" | "count" | "updatedAt" | "createdAt">
 ) => {
   return handleTryCatch<ExerciseDataType>(
     axiosInstance.post("/api/exercises", body)
   );
 };
 export const updateExercise = async (
-  body: Omit<ExerciseDataType, "_id" | "updatedAt" | "createdAt"> & {
+  body: Omit<ExerciseDataType, "_id" | "count" | "updatedAt" | "createdAt"> & {
     id: string;
   }
 ) => {
@@ -33,13 +33,26 @@ export const updateExercise = async (
   );
 };
 export const deleteExercise = async (id: string) => {
-  return handleTryCatch<ExerciseDataType>(
+  const response = await handleTryCatch<ExerciseDataType>(
     axiosInstance.delete("/api/exercises?id=" + id)
   );
+  return {
+    ...response,
+    data: {
+      ...(response?.data ?? {}),
+      _id: id,
+    },
+  };
 };
-export const increaseCount = async (id: string) => {
+export const increaseCount = async ({
+  id,
+  repsDidToday,
+}: {
+  id: string;
+  repsDidToday: number;
+}) => {
   const response = await handleTryCatch<any>(
-    axiosInstance.post("/api/exercises/updateCount", { id })
+    axiosInstance.post("/api/exercises/updateCount", { id, repsDidToday })
   );
   return {
     ...response,

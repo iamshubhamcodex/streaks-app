@@ -1,6 +1,6 @@
 "use client";
 
-import { createStreak } from "@/apiService/streaks";
+import { increaseCount } from "@/apiService/exercises";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,18 +14,17 @@ import {
 } from "@/components/ui/dialog";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 import { Paragraph } from "@/components/ui/typography";
 import { queryClient } from "@/lib/queryClient";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 const formSchema = z.object({
-  title: z.string().min(2, "Should be greater than 2 characters"),
-  description: z.string().optional(),
+  repsDidToday: z.string(),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -36,15 +35,15 @@ const fields: {
   placeholder?: string;
   type?: string;
 }[] = [
-  { name: "title", label: "Title", placeholder: "Enter streak title" },
   {
-    name: "description",
-    label: "Description",
-    placeholder: "Describe your streak",
+    name: "repsDidToday",
+    label: "Reps Did",
+    placeholder: "Enter number of reps did today",
+    type: "number",
   },
 ];
 
-export default function CreateStreakModalHandler() {
+export default function IncreaseCountModalHandler({ id }: { id: string }) {
   const [open, setOpen] = useState(false);
 
   const {
@@ -55,17 +54,16 @@ export default function CreateStreakModalHandler() {
   } = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
-      description: "",
+      repsDidToday: "0",
     },
   });
-  const { mutate: createStreakM, isPending: loading } = useMutation({
-    mutationFn: createStreak,
+  const { mutate: increaseCountM, isPending: loading } = useMutation({
+    mutationFn: increaseCount,
     onSuccess: (data) => {
       if (data.status === "success") {
         setOpen(false);
         reset();
-        queryClient.invalidateQueries({ queryKey: ["streaks"] });
+        queryClient.invalidateQueries({ queryKey: ["exercises"] });
         queryClient.invalidateQueries({ queryKey: ["dashboard"] });
       } else {
         alert(data.message ?? "Something went wrong");
@@ -74,26 +72,20 @@ export default function CreateStreakModalHandler() {
   });
 
   const onSubmit = (values: FormSchema) => {
-    createStreakM({
-      title: values.title ?? "",
-      description: values.description ?? "",
-    });
+    increaseCountM({ id, repsDidToday: +values.repsDidToday });
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
-          <Plus className="size-4" />
-          Add
-        </Button>
+        <Button disabled={loading}>Increment {loading && <Spinner />}</Button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Streak</DialogTitle>
+          <DialogTitle>Add Exercise</DialogTitle>
           <DialogDescription>
-            Add any streak that you do not wish to break.
+            Add any exercise that you do not wish to break.
           </DialogDescription>
         </DialogHeader>
 
@@ -122,7 +114,7 @@ export default function CreateStreakModalHandler() {
               </Button>
             </DialogClose>
             <Button type="submit" loading={loading}>
-              Create Streak
+              Increment
             </Button>
           </DialogFooter>
         </form>

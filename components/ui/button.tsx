@@ -23,7 +23,7 @@ const weightVariants = {
   bold: "font-bold",
 };
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xs text-sm font-medium cursor-pointer transition-all disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+  "inline-flex items-center justify-center gap-1 lg:gap-2 whitespace-nowrap rounded-xs text-sm font-medium cursor-pointer transition-all disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive text-[14px] lg:text-[16px]",
   {
     variants: {
       variant: {
@@ -46,7 +46,7 @@ const buttonVariants = cva(
           "bg-background text-muted-foreground hover:bg-primary hover:text-primary-foreground",
       },
       size: {
-        default: "py-2 px-4 rounded-md",
+        default: "py-1 lg:py-2 px-2 lg:px-4 rounded-md",
         xs: "py-1.5 px-2 rounded-xs",
         sm: "py-1.5 px-2 rounded-xs",
         md: "py-2.5 px-3 rounded-xs",

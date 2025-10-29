@@ -1,11 +1,12 @@
 "use client";
 
-import { ExerciseDataType, increaseCount } from "@/apiService/exercises";
+import { ExerciseDataType, deleteExercise } from "@/apiService/exercises";
+import { isSameDate } from "@/lib/dateUtility";
 import { queryClient } from "@/lib/queryClient";
 import { useMutation } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
 import { Card, CardContent, CardTitle } from "../ui/card";
 import ExerciseCard from "./ExerciseCard";
-import { useState } from "react";
 
 export default function ExerciseList({
   exercises,
@@ -14,26 +15,36 @@ export default function ExerciseList({
 }) {
   const [incrementingId, setIncrementingId] = useState<string[]>([]);
 
-  const { mutate: increaseCountM, isPending: loading } = useMutation({
-    mutationFn: increaseCount,
+  const { mutate: deleteExerciseM, isPending: loadingDelete } = useMutation({
+    mutationFn: deleteExercise,
     onSuccess: (data) => {
       if (data.status === "success") {
-        setIncrementingId((prev) => prev.filter((p) => p != data.data._id));
-        alert("Increased count for " + data.data.title);
         queryClient.invalidateQueries({ queryKey: ["exercises"] });
+        queryClient.invalidateQueries({ queryKey: ["dashboard"] });
       }
       if (data.status === "error") alert(data.message);
+      setIncrementingId((prev) => prev.filter((p) => p != data.data._id));
     },
   });
+  const remainingExercise = useMemo(() => {
+    return exercises.filter(
+      (exercise) =>
+        !isSameDate(new Date(exercise.updatedAt), new Date()) ||
+        exercise.count == 0
+    ).length;
+  }, [exercises]);
 
-  const handleIncrementClick = (id: string) => {
-    increaseCountM(id);
+  const handleDeleteClick = (id: string) => {
     setIncrementingId((prev) => [...prev, id]);
+    deleteExerciseM(id);
   };
 
   return (
     <Card variant={"md"} className="rounded-[12px]">
-      <CardTitle>You have {exercises.length} remaining Streaks</CardTitle>
+      <CardTitle>
+        You have {remainingExercise} remaining Exercise
+        {remainingExercise > 1 ? "s" : ""}
+      </CardTitle>
       {Array.isArray(exercises) && exercises.length !== 0 && (
         <CardContent className="flex flex-col gap-3">
           {Array.isArray(exercises) &&
@@ -41,8 +52,10 @@ export default function ExerciseList({
               <ExerciseCard
                 key={exercise._id}
                 exercise={exercise}
-                loading={loading && incrementingId.includes(exercise._id)}
-                handleIncrementClick={handleIncrementClick}
+                loadingDelete={
+                  loadingDelete && incrementingId.includes(exercise._id)
+                }
+                handleDeleteClick={handleDeleteClick}
               />
             ))}
         </CardContent>

@@ -7,11 +7,13 @@ import NextLink from "next/link";
 
 const sizeVariants = {
   60: "text-[40px] md:text-[50px] lg:text-[60px]",
+  50: "text-[30px] md:text-[40px] lg:text-[50px]",
+  40: "text-[30px] md:text-[35px] lg:text-[40px]",
   30: "text-[20px] md:text-[25px] lg:text-[30px]",
   24: "text-[24px]",
   20: "text-[20px]",
   18: "text-[18px]",
-  16: "text-[16px]",
+  16: "text-[14px] md:text-[15px] lg:text-[16px]",
   14: "text-[14px]",
   12: "text-[12px]",
 };

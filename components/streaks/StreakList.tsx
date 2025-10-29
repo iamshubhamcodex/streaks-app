@@ -9,7 +9,8 @@ import { queryClient } from "@/lib/queryClient";
 import { useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardTitle } from "../ui/card";
 import StreakCard from "./StreakCard";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { isSameDate } from "@/lib/dateUtility";
 
 export default function StreakList({ streaks }: { streaks: StreakDataType[] }) {
   const [incrementingId, setIncrementingId] = useState<string[]>([]);
@@ -19,7 +20,7 @@ export default function StreakList({ streaks }: { streaks: StreakDataType[] }) {
     onSuccess: (data) => {
       if (data.status === "success") {
         queryClient.invalidateQueries({ queryKey: ["streaks"] });
-        alert("Increased count for " + data.data.title);
+        queryClient.invalidateQueries({ queryKey: ["dashboard"] });
       }
       if (data.status === "error") alert(data.message);
       setIncrementingId((prev) => prev.filter((p) => p != data.data._id));
@@ -30,12 +31,18 @@ export default function StreakList({ streaks }: { streaks: StreakDataType[] }) {
     onSuccess: (data) => {
       if (data.status === "success") {
         queryClient.invalidateQueries({ queryKey: ["streaks"] });
-        alert("Delete Streak " + data.data.title);
+        queryClient.invalidateQueries({ queryKey: ["dashboard"] });
       }
       if (data.status === "error") alert(data.message);
       setIncrementingId((prev) => prev.filter((p) => p != data.data._id));
     },
   });
+  const remainingStreaks = useMemo(() => {
+    return streaks.filter(
+      (streak) =>
+        !isSameDate(new Date(streak.updatedAt), new Date()) || streak.count == 0
+    ).length;
+  }, [streaks]);
 
   const handleIncrementClick = (id: string) => {
     setIncrementingId((prev) => [...prev, id]);
@@ -48,7 +55,10 @@ export default function StreakList({ streaks }: { streaks: StreakDataType[] }) {
 
   return (
     <Card variant={"md"} className="rounded-[12px]">
-      <CardTitle>You have {streaks.length} remaining Streaks</CardTitle>
+      <CardTitle>
+        You have {remainingStreaks} remaining Streak
+        {remainingStreaks > 1 ? "s" : ""}
+      </CardTitle>
       {Array.isArray(streaks) && streaks.length !== 0 && (
         <CardContent className="flex flex-col gap-3">
           {Array.isArray(streaks) &&

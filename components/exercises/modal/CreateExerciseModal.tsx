@@ -1,6 +1,6 @@
 "use client";
 
-import { createStreak } from "@/apiService/streaks";
+import { createExercise } from "@/apiService/exercises";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -26,6 +26,8 @@ import * as z from "zod";
 const formSchema = z.object({
   title: z.string().min(2, "Should be greater than 2 characters"),
   description: z.string().optional(),
+  reps: z.number().min(10),
+  autoIncrease: z.number().min(3),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -36,15 +38,27 @@ const fields: {
   placeholder?: string;
   type?: string;
 }[] = [
-  { name: "title", label: "Title", placeholder: "Enter streak title" },
+  { name: "title", label: "Title", placeholder: "Enter exercise title" },
   {
     name: "description",
     label: "Description",
-    placeholder: "Describe your streak",
+    placeholder: "Describe your exercise",
+  },
+  {
+    name: "reps",
+    label: "Reps",
+    type: "number",
+    placeholder: "Enter total reps",
+  },
+  {
+    name: "autoIncrease",
+    type: "number",
+    label: "Increase Reps",
+    placeholder: "Enter Increase Reps",
   },
 ];
 
-export default function CreateStreakModalHandler() {
+export default function CreateExerciseModalHandler() {
   const [open, setOpen] = useState(false);
 
   const {
@@ -57,15 +71,17 @@ export default function CreateStreakModalHandler() {
     defaultValues: {
       title: "",
       description: "",
+      reps: 10,
+      autoIncrease: 3,
     },
   });
-  const { mutate: createStreakM, isPending: loading } = useMutation({
-    mutationFn: createStreak,
+  const { mutate: createExerciseM, isPending: loading } = useMutation({
+    mutationFn: createExercise,
     onSuccess: (data) => {
       if (data.status === "success") {
         setOpen(false);
         reset();
-        queryClient.invalidateQueries({ queryKey: ["streaks"] });
+        queryClient.invalidateQueries({ queryKey: ["exercises"] });
         queryClient.invalidateQueries({ queryKey: ["dashboard"] });
       } else {
         alert(data.message ?? "Something went wrong");
@@ -74,9 +90,11 @@ export default function CreateStreakModalHandler() {
   });
 
   const onSubmit = (values: FormSchema) => {
-    createStreakM({
+    createExerciseM({
       title: values.title ?? "",
       description: values.description ?? "",
+      reps: values.reps ?? 10,
+      autoIncrease: values.autoIncrease ?? 3,
     });
   };
 
@@ -91,9 +109,9 @@ export default function CreateStreakModalHandler() {
 
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Streak</DialogTitle>
+          <DialogTitle>Add Exercise</DialogTitle>
           <DialogDescription>
-            Add any streak that you do not wish to break.
+            Add any exercise that you do not wish to break.
           </DialogDescription>
         </DialogHeader>
 
@@ -122,7 +140,7 @@ export default function CreateStreakModalHandler() {
               </Button>
             </DialogClose>
             <Button type="submit" loading={loading}>
-              Create Streak
+              Create Exercise
             </Button>
           </DialogFooter>
         </form>

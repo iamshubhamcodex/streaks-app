@@ -1,6 +1,6 @@
 "use client";
 
-import { createStreak } from "@/apiService/streaks";
+import { updateExercise } from "@/apiService/exercises";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,7 +18,7 @@ import { Paragraph } from "@/components/ui/typography";
 import { queryClient } from "@/lib/queryClient";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -26,6 +26,8 @@ import * as z from "zod";
 const formSchema = z.object({
   title: z.string().min(2, "Should be greater than 2 characters"),
   description: z.string().optional(),
+  reps: z.number().min(10),
+  autoIncrease: z.number().min(3),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -36,15 +38,39 @@ const fields: {
   placeholder?: string;
   type?: string;
 }[] = [
-  { name: "title", label: "Title", placeholder: "Enter streak title" },
+  { name: "title", label: "Title", placeholder: "Enter exercise title" },
   {
     name: "description",
     label: "Description",
-    placeholder: "Describe your streak",
+    placeholder: "Describe your exercise",
+  },
+  {
+    name: "reps",
+    label: "Reps",
+    type: "number",
+    placeholder: "Enter total reps",
+  },
+  {
+    name: "autoIncrease",
+    type: "number",
+    label: "Increase Reps",
+    placeholder: "Enter Increase Reps",
   },
 ];
 
-export default function CreateStreakModalHandler() {
+export default function EditExerciseModal({
+  id,
+  title,
+  description,
+  reps,
+  autoIncrease,
+}: {
+  id: string;
+  title: string;
+  description: string;
+  reps: number;
+  autoIncrease: number;
+}) {
   const [open, setOpen] = useState(false);
 
   const {
@@ -55,17 +81,19 @@ export default function CreateStreakModalHandler() {
   } = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
-      description: "",
+      title: title ?? "",
+      description: description ?? "",
+      reps: reps ?? 10,
+      autoIncrease: autoIncrease ?? 3,
     },
   });
-  const { mutate: createStreakM, isPending: loading } = useMutation({
-    mutationFn: createStreak,
+  const { mutate: updateExerciseM, isPending: loading } = useMutation({
+    mutationFn: updateExercise,
     onSuccess: (data) => {
       if (data.status === "success") {
         setOpen(false);
         reset();
-        queryClient.invalidateQueries({ queryKey: ["streaks"] });
+        queryClient.invalidateQueries({ queryKey: ["exercises"] });
         queryClient.invalidateQueries({ queryKey: ["dashboard"] });
       } else {
         alert(data.message ?? "Something went wrong");
@@ -74,26 +102,32 @@ export default function CreateStreakModalHandler() {
   });
 
   const onSubmit = (values: FormSchema) => {
-    createStreakM({
+    updateExerciseM({
+      id,
       title: values.title ?? "",
       description: values.description ?? "",
+      reps: values.reps ?? 10,
+      autoIncrease: values.autoIncrease ?? 5,
     });
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
-          <Plus className="size-4" />
-          Add
+        <Button
+          variant={"ghost"}
+          className="w-full py-1.5 px-2 gap-3 justify-start rounded-[6px]"
+        >
+          <Pencil stroke="#fff" /> Edit
         </Button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Streak</DialogTitle>
+          <DialogTitle>Edit Exercise</DialogTitle>
           <DialogDescription>
-            Add any streak that you do not wish to break.
+            {" "}
+            Edit the details of Exercise to best fit your need.
           </DialogDescription>
         </DialogHeader>
 
@@ -122,7 +156,7 @@ export default function CreateStreakModalHandler() {
               </Button>
             </DialogClose>
             <Button type="submit" loading={loading}>
-              Create Streak
+              Update Exercise
             </Button>
           </DialogFooter>
         </form>

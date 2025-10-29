@@ -1,25 +1,34 @@
+"use client";
+
 import { getDashboard } from "@/apiService/dashboard";
 import ExerciseSummary from "@/components/dashboard/ExerciseSummary";
 import StreaksSummary from "@/components/dashboard/StreaksSummary";
 import Container from "@/components/ui/container";
 import Section from "@/components/ui/section";
+import { Spinner } from "@/components/ui/spinner";
 import { Heading, Paragraph } from "@/components/ui/typography";
+import { useQuery } from "@tanstack/react-query";
 
-export default async function DashboardPage() {
-  const { status, data, message } = await getDashboard();
+export default function DashboardPage() {
+  const { data, isPending: loading } = useQuery({
+    queryKey: ["dashboard"],
+    queryFn: getDashboard,
+  });
 
   return (
     <div className="dashboardPageContainer">
       <Section>
-        <Container className="flex flex-col gap-10">
-          <Heading size={60}>Dashboard</Heading>
-          {status === "success" ? (
+        <Container className="flex flex-col gap-10 lg:gap-20">
+          <Heading size={50}>Dashboard</Heading>
+          {loading ? (
+            <Spinner />
+          ) : data?.status === "success" ? (
             <>
-              <StreaksSummary streaks={data.streaks} />
-              <ExerciseSummary exercises={data.exercises} />
+              <StreaksSummary streaks={data?.data.streaks} />
+              <ExerciseSummary exercises={data?.data.exercises} />
             </>
           ) : (
-            <Paragraph>{message}</Paragraph>
+            <Paragraph>{data?.message}</Paragraph>
           )}
         </Container>
       </Section>

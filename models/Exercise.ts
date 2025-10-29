@@ -5,6 +5,7 @@ interface ExerciseType extends Document {
   description: string;
   count: number;
   reps: number;
+  continuousDays: number;
   autoIncrease: number;
   createdAt?: Date;
   updatedAt?: Date;
@@ -16,6 +17,7 @@ const ExerciseSchema = new Schema<ExerciseType>(
     description: { type: String, required: true },
     count: { type: Number, default: 0 },
     reps: { type: Number, default: 0 },
+    continuousDays: { type: Number, default: 0 },
     autoIncrease: { type: Number, default: 0 },
   },
   { timestamps: true }

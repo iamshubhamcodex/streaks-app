@@ -1,6 +1,6 @@
 import { ArrowUpRight, FolderKanban } from "lucide-react";
 import { Button } from "../ui/button";
-import { Heading, Link, Span } from "../ui/typography";
+import { Heading, Link, Paragraph, Span } from "../ui/typography";
 import { Card, CardContent, CardTitle } from "../ui/card";
 import {
   Item,
@@ -19,7 +19,7 @@ export default function ExerciseSummary({
   exercises: ExerciseDataType[];
 }) {
   return (
-    <div className="exercisesContainer | flex flex-col gap-8 w-full">
+    <div className="streaksContainer | flex flex-col gap-5 lg:gap-8 w-full">
       <div className="head | flex items-center justify-between">
         <Heading headingLevel="h2" size={30}>
           Exercises Summary
@@ -32,22 +32,31 @@ export default function ExerciseSummary({
       </div>
       <Card variant={"md"} className="rounded-[12px]">
         {!Array.isArray(exercises) || exercises.length == 0 ? (
-          <CardTitle>No Pending Exercises</CardTitle>
+          <CardTitle>
+            <Paragraph>No Pending Exercises</Paragraph>
+          </CardTitle>
         ) : (
-          <CardTitle>You have {exercises.length} remaining Exercises</CardTitle>
+          <CardTitle>
+            <Paragraph>
+              You have {exercises.length} remaining Exercise
+              {exercises.length > 1 ? "s" : ""}
+            </Paragraph>
+          </CardTitle>
         )}
         {Array.isArray(exercises) && exercises.length !== 0 && (
           <CardContent className="flex flex-col gap-3">
             {exercises.map((exercise) => (
               <Item key={exercise._id} variant={"muted"} size={"sm"}>
-                <ItemMedia>
-                  <FolderKanban className="size-5" />
-                </ItemMedia>
-                <ItemContent>
-                  <ItemTitle>{exercise.title}</ItemTitle>
-                  <ItemDescription>{exercise.description}</ItemDescription>
-                </ItemContent>
-                <ItemActions>
+                <div className="flex gap-2 grow">
+                  <ItemMedia>
+                    <FolderKanban className="size-5" />
+                  </ItemMedia>
+                  <ItemContent>
+                    <ItemTitle>{exercise.title}</ItemTitle>
+                    <ItemDescription>{exercise.description}</ItemDescription>
+                  </ItemContent>
+                </div>
+                <ItemActions className="flex justify-end grow">
                   <Span weight={"bold"}>{exercise.count}</Span>
                   <Span size={14} className="opacity-80">
                     {formatDate(exercise.updatedAt)}

@@ -81,8 +81,8 @@ const cardVariants = cva("", {
     variant: {
       xl: "p-12",
       lg: "p-8",
-      md: "p-6",
-      sm: "p-4",
+      md: "p-4 lg:p-6",
+      sm: "p-2 lg:p-4",
       xs: "p-3",
     },
   },

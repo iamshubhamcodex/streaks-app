@@ -37,25 +37,32 @@ function StreakCard({
   handleDeleteClick: (id: string) => void;
 }) {
   return (
-    <Item key={streak._id} variant={"muted"} size={"sm"}>
-      <ItemMedia>
-        <FolderKanban className="size-5" />
-      </ItemMedia>
-      <ItemContent className="grid grid-cols-2 grow">
-        <div className="">
-          <ItemTitle>{streak.title}</ItemTitle>
-          <ItemDescription>{streak.description}</ItemDescription>
-        </div>
-        <div className="w-max flex flex-col items-end">
-          <Paragraph size={18} weight={"bold"}>
-            {streak.count}
-          </Paragraph>
-          <Span size={12} className="opacity-80">
-            {formatDate(streak.updatedAt)}
-          </Span>
-        </div>
-      </ItemContent>
-      <ItemActions>
+    <Item
+      key={streak._id}
+      variant={"muted"}
+      size={"sm"}
+      className="flex gap-3 md:gap-4 flex-row flex-wrap md:flex-nowrap justify-end"
+    >
+      <div className="flex gap-3 md:gap-4 grow">
+        <ItemMedia>
+          <FolderKanban className="size-5" />
+        </ItemMedia>
+        <ItemContent className="flex-row gap-3 flex-1 grow">
+          <div className="grow">
+            <ItemTitle>{streak.title}</ItemTitle>
+            <ItemDescription>{streak.description}</ItemDescription>
+          </div>
+          <div className="w-max flex flex-col items-end">
+            <Paragraph size={18} weight={"bold"}>
+              {streak.count}
+            </Paragraph>
+            <Span size={12} className="opacity-80 min-w-max">
+              {formatDate(streak.updatedAt)}
+            </Span>
+          </div>
+        </ItemContent>
+      </div>
+      <ItemActions className="flex justify-end">
         <Button
           disabled={loading}
           onClick={() => handleIncrementClick(streak._id)}
@@ -81,9 +88,15 @@ function StreakCard({
               <DropdownMenuItem
                 className="flex gap-3 items-center"
                 onClick={() => handleDeleteClick(streak._id)}
+                asChild
               >
-                {loadingDelete ? <Spinner /> : <Trash stroke="#fff" />}
-                Delete
+                <Button
+                  variant={"ghost"}
+                  className="w-full py-1.5 px-2 gap-3 justify-start rounded-[6px]"
+                >
+                  {loadingDelete ? <Spinner /> : <Trash stroke="#fff" />}
+                  Delete
+                </Button>
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>

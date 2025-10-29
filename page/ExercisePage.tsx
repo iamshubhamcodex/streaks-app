@@ -2,13 +2,12 @@
 
 import { getAllExercises } from "@/apiService/exercises";
 import ExerciseList from "@/components/exercises/ExerciseList";
-import { Button } from "@/components/ui/button";
+import CreateExerciseModalHandler from "@/components/exercises/modal/CreateExerciseModal";
 import Container from "@/components/ui/container";
 import Section from "@/components/ui/section";
 import { Spinner } from "@/components/ui/spinner";
 import { Heading, Paragraph } from "@/components/ui/typography";
 import { useQuery } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
 
 export default function ExercisePage() {
   const { data, isPending } = useQuery({
@@ -22,10 +21,7 @@ export default function ExercisePage() {
         <Container className="flex flex-col gap-10">
           <div className="head | flex items-center justify-between">
             <Heading size={30}>Exercises</Heading>
-            <Button>
-              <Plus className="size-4" />
-              Add
-            </Button>
+            <CreateExerciseModalHandler />
           </div>
           {isPending ? (
             <Spinner />

@@ -30,7 +30,6 @@ const formSchema = z.object({
 
 type FormSchema = z.infer<typeof formSchema>;
 
-// ✅ Dynamic field configuration
 const fields: {
   name: keyof FormSchema;
   label: string;
@@ -75,6 +74,7 @@ export default function EditStreakModal({
         setOpen(false);
         reset();
         queryClient.invalidateQueries({ queryKey: ["streaks"] });
+        queryClient.invalidateQueries({ queryKey: ["dashboard"] });
       } else {
         alert(data.message ?? "Something went wrong");
       }
@@ -102,9 +102,10 @@ export default function EditStreakModal({
 
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Streak</DialogTitle>
+          <DialogTitle>Edit Streak</DialogTitle>
           <DialogDescription>
-            Add any streak that you do not wish to break.
+            {" "}
+            Edit the details of Streak to best fit your need.
           </DialogDescription>
         </DialogHeader>
 

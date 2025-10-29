@@ -17,6 +17,7 @@ export async function GET() {
   exercises.forEach(async (exercise) => {
     if (isSameDate(exercise.updatedAt, exerciseBreakDate)) {
       exercise.count = 0;
+      exercise.continuousDays = 0;
       updatedAny = true;
       await exercise.save();
     }
