@@ -27,13 +27,7 @@ export async function GET() {
       { count: 0 },
     ],
   });
-  const improvements = await Improvement.find({
-    $or: [
-      { updatedAt: { $lt: startOfDay } },
-      { updatedAt: { $gt: endOfDay } },
-      { count: 0 },
-    ],
-  });
+  const improvements = await Improvement.find();
 
   return NextResponse.json({
     status: "success",

@@ -1,5 +1,5 @@
 import { ExerciseDataType } from "@/apiService/exercises";
-import { formatDate } from "@/lib/dateUtility";
+import { formatDate, isSameDate } from "@/lib/dateUtility";
 import { EllipsisVertical, FolderKanban, Trash } from "lucide-react";
 import { memo } from "react";
 import { Button } from "../ui/button";
@@ -60,7 +60,10 @@ function ExerciseCard({
         </ItemContent>
       </div>
       <ItemActions className="flex justify-end">
-        <IncreaseCountModalHandler id={exercise._id} />
+        {(exercise.count == 0 ||
+          !isSameDate(new Date(), new Date(exercise.updatedAt))) && (
+          <IncreaseCountModalHandler id={exercise._id} />
+        )}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant={"outline"}>

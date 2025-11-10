@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Paragraph } from "@/components/ui/typography";
 import { queryClient } from "@/lib/queryClient";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,6 +35,7 @@ const fields: {
   name: keyof FormSchema;
   label: string;
   placeholder?: string;
+  inputType?: "textarea" | "input";
   type?: string;
 }[] = [
   { name: "title", label: "Title", placeholder: "Enter streak title" },
@@ -41,6 +43,7 @@ const fields: {
     name: "description",
     label: "Description",
     placeholder: "Describe your streak",
+    inputType: "textarea",
   },
 ];
 
@@ -114,11 +117,18 @@ export default function EditStreakModal({
             {fields.map((field) => (
               <Field key={field.name}>
                 <FieldLabel>{field.label}</FieldLabel>
-                <Input
-                  {...register(field.name)}
-                  placeholder={field.placeholder}
-                  type={field.type || "text"}
-                />
+                {field.inputType && field.inputType === "textarea" ? (
+                  <Textarea
+                    {...register(field.name)}
+                    placeholder={field.placeholder}
+                  />
+                ) : (
+                  <Input
+                    {...register(field.name)}
+                    placeholder={field.placeholder}
+                    type={field.type || "text"}
+                  />
+                )}
                 {errors?.[field.name] && (
                   <Paragraph className="text-[14px] text-red-500 font-bold">
                     {errors?.[field.name]?.message}

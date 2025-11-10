@@ -1,5 +1,5 @@
 import { StreakDataType } from "@/apiService/streaks";
-import { formatDate } from "@/lib/dateUtility";
+import { formatDate, isSameDate } from "@/lib/dateUtility";
 import { EllipsisVertical, FolderKanban, Trash } from "lucide-react";
 import { memo } from "react";
 import { Button } from "../ui/button";
@@ -63,12 +63,15 @@ function StreakCard({
         </ItemContent>
       </div>
       <ItemActions className="flex justify-end">
-        <Button
-          disabled={loading}
-          onClick={() => handleIncrementClick(streak._id)}
-        >
-          Increment {loading && <Spinner />}
-        </Button>
+        {(streak.count == 0 ||
+          !isSameDate(new Date(), new Date(streak.updatedAt))) && (
+          <Button
+            disabled={loading}
+            onClick={() => handleIncrementClick(streak._id)}
+          >
+            Increment {loading && <Spinner />}
+          </Button>
+        )}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant={"outline"}>

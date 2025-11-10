@@ -39,31 +39,30 @@ export default function ExerciseList({
     deleteExerciseM(id);
   };
 
-  const sortedExercises: ExerciseDataType[] = useMemo(() => {
-    return exercises
-      .reduce(
-        (acc, it) => {
-          if (!isSameDate(new Date(it.updatedAt), new Date()) || it.count === 0)
-            acc[0].push(it);
-          else acc[1].push(it);
+  const sortedExercises: ExerciseDataType[][] = useMemo(() => {
+    return exercises.reduce(
+      (acc, it) => {
+        if (!isSameDate(new Date(it.updatedAt), new Date()) || it.count === 0)
+          acc[0].push(it);
+        else acc[1].push(it);
 
-          return acc;
-        },
-        [[], []] as ExerciseDataType[][]
-      )
-      .reduce((acc, it) => [...acc, ...it], []);
+        return acc;
+      },
+      [[], []] as ExerciseDataType[][]
+    );
   }, [exercises]);
 
+  if (!Array.isArray(exercises)) return null;
   return (
-    <Card variant={"md"} className="rounded-[12px]">
-      <CardTitle>
-        You have {remainingExercise} remaining Exercise
-        {remainingExercise > 1 ? "s" : ""}
-      </CardTitle>
-      {Array.isArray(exercises) && exercises.length !== 0 && (
-        <CardContent className="flex flex-col gap-3">
-          {Array.isArray(exercises) &&
-            sortedExercises.map((exercise) => (
+    <>
+      {sortedExercises[0].length !== 0 && (
+        <Card variant={"md"} className="rounded-[12px]">
+          <CardTitle>
+            You have {sortedExercises[0].length} remaining Exercise
+            {sortedExercises[0].length > 1 ? "s" : ""}
+          </CardTitle>
+          <CardContent className="flex flex-col gap-3">
+            {sortedExercises[0].map((exercise) => (
               <ExerciseCard
                 key={exercise._id}
                 exercise={exercise}
@@ -73,8 +72,29 @@ export default function ExerciseList({
                 handleDeleteClick={handleDeleteClick}
               />
             ))}
-        </CardContent>
+          </CardContent>
+        </Card>
       )}
-    </Card>
+      {sortedExercises[0].length !== 0 && (
+        <Card variant={"md"} className="rounded-[12px]">
+          <CardTitle>
+            You have completed {sortedExercises[1].length} Exercise
+            {remainingExercise > 1 ? "s" : ""}
+          </CardTitle>
+          <CardContent className="flex flex-col gap-3">
+            {sortedExercises[1].map((exercise) => (
+              <ExerciseCard
+                key={exercise._id}
+                exercise={exercise}
+                loadingDelete={
+                  loadingDelete && incrementingId.includes(exercise._id)
+                }
+                handleDeleteClick={handleDeleteClick}
+              />
+            ))}
+          </CardContent>
+        </Card>
+      )}
+    </>
   );
 }

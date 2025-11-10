@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Paragraph } from "@/components/ui/typography";
 import { queryClient } from "@/lib/queryClient";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -37,12 +38,14 @@ const fields: {
   label: string;
   placeholder?: string;
   type?: string;
+  inputType?: "textarea" | "input";
 }[] = [
   { name: "title", label: "Title", placeholder: "Enter exercise title" },
   {
     name: "description",
     label: "Description",
     placeholder: "Describe your exercise",
+    inputType: "textarea",
   },
   {
     name: "reps",
@@ -120,11 +123,18 @@ export default function CreateExerciseModalHandler() {
             {fields.map((field) => (
               <Field key={field.name}>
                 <FieldLabel>{field.label}</FieldLabel>
-                <Input
-                  {...register(field.name)}
-                  placeholder={field.placeholder}
-                  type={field.type || "text"}
-                />
+                {field.inputType && field.inputType === "textarea" ? (
+                  <Textarea
+                    {...register(field.name)}
+                    placeholder={field.placeholder}
+                  />
+                ) : (
+                  <Input
+                    {...register(field.name)}
+                    placeholder={field.placeholder}
+                    type={field.type || "text"}
+                  />
+                )}
                 {errors?.[field.name] && (
                   <Paragraph className="text-[14px] text-red-500 font-bold">
                     {errors?.[field.name]?.message}

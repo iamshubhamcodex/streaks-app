@@ -83,9 +83,9 @@ export default function IncreaseCountModalHandler({ id }: { id: string }) {
 
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Exercise</DialogTitle>
+          <DialogTitle>Increase Count</DialogTitle>
           <DialogDescription>
-            Add any exercise that you do not wish to break.
+            Completed Reps. Log Count for each day
           </DialogDescription>
         </DialogHeader>
 

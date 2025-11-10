@@ -53,9 +53,8 @@ export default function StreakList({ streaks }: { streaks: StreakDataType[] }) {
     deleteStreakM(id);
   };
 
-const sortedStreaks: StreakDataType[] = useMemo(() => {
-  return streaks
-    .reduce(
+  const sortedStreaks: StreakDataType[][] = useMemo(() => {
+    return streaks.reduce(
       (acc, it) => {
         if (!isSameDate(new Date(it.updatedAt), new Date()) || it.count === 0)
           acc[0].push(it);
@@ -64,33 +63,66 @@ const sortedStreaks: StreakDataType[] = useMemo(() => {
         return acc;
       },
       [[], []] as StreakDataType[][]
-    )
-    .reduce((acc, it) => [...acc, ...it], []);
-}, [streaks]);
+    );
+    // .reduce((acc, it) => [...acc, ...it], []);
+  }, [streaks]);
 
-return (
-  <Card variant={"md"} className="rounded-[12px]">
-    <CardTitle>
-      You have {remainingStreaks} remaining Streak
-      {remainingStreaks > 1 ? "s" : ""}
-    </CardTitle>
-    {Array.isArray(streaks) && streaks.length !== 0 && (
-      <CardContent className="flex flex-col gap-3">
-        {Array.isArray(streaks) &&
-          sortedStreaks.map((streak) => (
-            <StreakCard
-              key={streak._id}
-              streak={streak}
-              loading={loadingIncrease && incrementingId.includes(streak._id)}
-              loadingDelete={
-                loadingDelete && incrementingId.includes(streak._id)
-              }
-              handleIncrementClick={handleIncrementClick}
-              handleDeleteClick={handleDeleteClick}
-            />
-          ))}
-      </CardContent>
-    )}
-  </Card>
-);
+  if (Array.isArray(streaks))
+    return (
+      <>
+        {sortedStreaks[0].length !== 0 && (
+          <Card variant={"md"} className="rounded-[12px]">
+            <CardTitle>
+              You have {remainingStreaks} remaining Streak
+              {remainingStreaks > 1 ? "s" : ""}
+            </CardTitle>
+            {Array.isArray(streaks) && streaks.length !== 0 && (
+              <CardContent className="flex flex-col gap-3">
+                {sortedStreaks[0].map((streak) => (
+                  <StreakCard
+                    key={streak._id}
+                    streak={streak}
+                    loading={
+                      loadingIncrease && incrementingId.includes(streak._id)
+                    }
+                    loadingDelete={
+                      loadingDelete && incrementingId.includes(streak._id)
+                    }
+                    handleIncrementClick={handleIncrementClick}
+                    handleDeleteClick={handleDeleteClick}
+                  />
+                ))}
+              </CardContent>
+            )}
+          </Card>
+        )}
+        {sortedStreaks[1].length !== 0 && (
+          <Card variant={"md"} className="rounded-[12px]">
+            <CardTitle>
+              You have completed {sortedStreaks[1].length} Streak
+              {sortedStreaks[1].length > 1 ? "s" : ""}
+            </CardTitle>
+            {Array.isArray(streaks) && streaks.length !== 0 && (
+              <CardContent className="flex flex-col gap-3">
+                {sortedStreaks[1].map((streak) => (
+                  <StreakCard
+                    key={streak._id}
+                    streak={streak}
+                    loading={
+                      loadingIncrease && incrementingId.includes(streak._id)
+                    }
+                    loadingDelete={
+                      loadingDelete && incrementingId.includes(streak._id)
+                    }
+                    handleIncrementClick={handleIncrementClick}
+                    handleDeleteClick={handleDeleteClick}
+                  />
+                ))}
+              </CardContent>
+            )}
+          </Card>
+        )}
+      </>
+    );
+  else return null;
 }

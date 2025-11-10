@@ -1,8 +1,7 @@
+import ReactQueryProvider from "@/components/common/ReactQueryProvider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import ReactQueryProvider from "@/components/common/ReactQueryProvider";
-import CheckDataNdReset from "@/components/CheckDataNdReset";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,7 +28,6 @@ export default function RootLayout({
       <body
         className={`dark ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <CheckDataNdReset />
         <ReactQueryProvider>{children}</ReactQueryProvider>
       </body>
     </html>
